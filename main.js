@@ -7,7 +7,7 @@ const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-let Arena= Math.floor(Math.random()*5);
+let Arena= Math.floor(Math.random()*13);
 canvas.style.backgroundImage=`url('GameAssets/Arenas/Arena${Arena+1}.gif')`;
 
 
