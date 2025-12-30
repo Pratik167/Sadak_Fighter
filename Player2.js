@@ -17,11 +17,11 @@ class Player2{
     };
 
     this.gravity=1;
-    this.jumpPower=-20;
+    this.jumpPower=-25;
     this.isOnGround=false;
 
     this.color="yellow";
-    this.speed=11;
+    this.speed=7;
 
     this.isAttacking
 

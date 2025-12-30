@@ -52,6 +52,7 @@ body{
   width: 100%; 
   bottom: 0;
   border-radius: 100px;
+  /* transform: skew(20deg); */
 }
 #p2Health{
   position: absolute;
