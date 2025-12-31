@@ -1,9 +1,9 @@
 class Player2{
-  constructor({ctx,imageSrc,framesMax=1,scale=1,offSet={x:0,y:0},sprites}){
+  constructor({ctx,imageSrc,framesMax=1,scale=1,offSet={x:0,y:0},sprites,attackBox={offset:{},width:undefined,height:undefined}}){
     this.ctx=ctx;
 
     this.position={
-      x:canvas.width-200,
+      x:canvas.width-400,
       y:0,
     };
     this.size={
@@ -21,6 +21,7 @@ class Player2{
     this.scale=scale;
     this.offSet=offSet;
     this.sprites=sprites;
+    this.dead=false;
 
     for(const sprite in this.sprites){
       sprites[sprite].image=new Image()
@@ -28,7 +29,7 @@ class Player2{
     }
 
 
-    this.gravity=1;
+    this.gravity=0.8;
     this.mathi={
       y:0,
     };
@@ -41,30 +42,56 @@ class Player2{
     this.attackBox={
         x:0,
         y:0,
-        width:-150,
-        height:50,
-    }
+        width:-attackBox.width,
+        height:attackBox.height,
+        offSet:attackBox.offset,
+    };
     this.health=100;
   }
  
-  draw(){
-    this.ctx.imageSmoothingEnabled=false;
-    this.ctx.drawImage(
-      this.image,
-      this.framesCurrent*(this.image.width/this.framesMax),
-      0,
-      this.image.width/this.framesMax,
-      this.image.height,
-      this.position.x-this.offSet.x,
-      this.position.y-this.offSet.y,
-      (this.image.width/this.framesMax)*this.scale,
-      this.image.height*this.scale
-    );
-  }
+  draw() {
+  this.ctx.save(); // canvas ko current state stores
+  this.ctx.imageSmoothingEnabled = false; // bnot too much blurry 
+  this.ctx.translate(
+    this.position.x-this.offSet.x+(this.image.width/this.framesMax)*this.scale,
+    this.position.y-this.offSet.y
+  );// drawing ko og origin maintains
+  this.ctx.scale(-1,1);// horizontall flip
+  this.ctx.drawImage(
+    this.image,
+    this.framesCurrent*(this.image.width/this.framesMax),
+    0,
+    this.image.width/this.framesMax,
+    this.image.height,
+    0,
+    0,
+    (this.image.width/this.framesMax)*this.scale,
+    this.image.height*this.scale
+  );
+  this.ctx.restore();
+
+  // this.ctx.fillStyle = "green"; //collisoin testt
+  //     this.ctx.fillRect(
+  //       this.attackBox.x,
+  //       this.attackBox.y,
+  //       this.attackBox.width,
+  //       this.attackBox.height
+  //     );
+      
+}
+
   switchSprite(sprite){
+    if(this.image==this.sprites.death.image){
+      if(this.framesCurrent==this.sprites.death.framesMax-1)this.dead=true;
+        return;
+    }
+
     if((this.image==this.sprites.attack1.image&&this.framesCurrent<this.sprites.attack1.framesMax-1)||
   (this.image==this.sprites.attack2.image&&this.framesCurrent<this.sprites.attack2.framesMax-1)){
     this.isAttacking=false
+      return;
+    }
+    if(this.image==this.sprites.takeHit.image&&this.framesCurrent<this.sprites.takeHit.framesMax-1){
       return;
     }
     switch(sprite){
@@ -110,13 +137,24 @@ class Player2{
           this.framesCurrent=0
         }
         break
+      case 'takeHit':
+        if(this.image!==this.sprites.takeHit.image){
+          this.image=this.sprites.takeHit.image
+          this.framesMax=this.sprites.takeHit.framesMax
+          this.framesCurrent=0
+        }
+        break
+      case 'death':
+        if(this.image!==this.sprites.death.image){
+          this.image=this.sprites.death.image
+          this.framesMax=this.sprites.death.framesMax
+          this.framesCurrent=0
+        }
+        break
     }
   }
-
-  update(){
-    this.draw();
-
-    //Sprite animatess
+  animate(){
+//Sprite animatess
     this.framesElapsed++;
     if (this.framesElapsed%this.framesHold==0){
       if(this.framesCurrent<this.framesMax-1){
@@ -125,6 +163,13 @@ class Player2{
         this.framesCurrent=0
       }
     }
+  }
+  update(){
+    this.draw();
+    if(!this.dead){
+      this.animate();
+    }
+    
 
     this.mathi.y+=this.gravity;
     this.position.y+=this.mathi.y;
@@ -139,8 +184,8 @@ class Player2{
     }
 
 
-    this.attackBox.x=this.position.x+this.size.width;
-    this.attackBox.y=this.position.y;
+    this.attackBox.x=this.position.x+0;
+    this.attackBox.y=this.position.y+50;
 
     if (
   this.isAttacking&&
@@ -156,17 +201,20 @@ class Player2{
       this.mathi.y=this.jumpPower;
       this.isOnGround=false;
     }
+    this.switchSprite("jump");
   }
 
   moveLeft(){
     this.position.x-=this.speed;
     if(this.position.x<0)this.position.x=0;
+    this.switchSprite("run");
   }
 
   moveRight(){
     this.position.x+=this.speed;
-    if (this.position.x+this.size.width>window.innerWidth)
-      this.position.x=window.innerWidth-this.size.width;
+    if (this.position.x+this.size.width>window.innerWidth-100)
+      this.position.x=window.innerWidth-this.size.width-100;
+    this.switchSprite("run");
   }
    attack(){
     if (this.isAttacking) return;
@@ -175,6 +223,14 @@ class Player2{
     this.isAttacking=true;
     this.switchSprite(`attack${a}`);
     console.log(a);
+}
+takeHit(){
+  this.health-=10;
+  if(this.health<=0){
+    this.switchSprite("death");
+  }else{
+    this.switchSprite("takeHit");
+  }
 }
 }
 

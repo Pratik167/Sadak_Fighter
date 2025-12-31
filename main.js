@@ -9,7 +9,17 @@ canvas.height=window.innerHeight;
 
 let Arena= Math.floor(Math.random()*13);
 canvas.style.backgroundImage=`url('GameAssets/Arenas/Arena${Arena+1}.gif')`;
+let a=1;
 
+let music=Math.floor(Math.random()*2);
+const bgMusic= new Audio(`GameAssets/bgMusic/music${music+1}.mp3`);
+// document.addEventListener("click",()=>{
+  
+// })
+if(a==1){
+bgMusic.play();
+  bgMusic.volume=0.1;
+}
 
 const player=new Player({
  imageSrc:"GameAssets/Players/HeroKnight/Sprites/Idle.png",
@@ -48,6 +58,22 @@ const player=new Player({
     imageSrc:`GameAssets/Players/HeroKnight/Sprites/Attack2.png`,
     framesMax:7,
   },
+  takeHit:{
+    imageSrc:`GameAssets/Players/HeroKnight/Sprites/TakeHit.png`,
+    framesMax:4,
+  },
+  death:{
+    imageSrc:`GameAssets/Players/HeroKnight/Sprites/Death.png`,
+    framesMax:11,
+  },
+ },
+ attackBox:{
+  offset:{
+    x:0,
+    y:0,
+  },
+  width:200,
+  height:50,
  },
  ctx:ctx,
 });
@@ -88,6 +114,23 @@ const player2=new Player2({
     imageSrc:`GameAssets/Players/MartialHero/Sprites/Attack2.png`,
     framesMax:6,
   },
+  takeHit:{
+    imageSrc:`GameAssets/Players/MartialHero/Sprites/TakeHitWhite.png`,
+    framesMax:4,
+  },
+  death:{
+    imageSrc:`GameAssets/Players/MartialHero/Sprites/Death.png`,
+    framesMax:6,
+  },
+
+ },
+ attackBox:{
+  offset:{
+    x:0,
+    y:0,
+  },
+  width:200,
+  height:50,
  },
  ctx:ctx,
 });
@@ -124,18 +167,18 @@ function moving(){
 
   if(keys["a"]&&lastKey1=="a"){
     player.moveLeft();
-    player.switchSprite("run");
+  
   } else if(keys["d"]&&lastKey1=="d"){
     player.moveRight();
-    player.switchSprite("run");
+
   }else{
     player.switchSprite("idle");
   }
 
-  if(keys["w"]){
+  if(keys["w"]&&!player.isAttacking){
     player.jump();
-    player.switchSprite("jump");
-  }else if(player.mathi.y>0){
+  }
+  else if(player.mathi.y>0&&player.mathi.y<1.6){
     player.framesMax=player.sprites.fall.framesMax
     player.switchSprite('fall')
     console.log("falling");
@@ -147,29 +190,30 @@ function moving(){
     return};
   if (keys["ArrowLeft"]&&lastKey2=="ArrowLeft"){
     player2.moveLeft();
-    player2.switchSprite("run");
+    
   }
   else if(keys["ArrowRight"]&&lastKey2=="ArrowRight"){
     player2.moveRight();
-    player2.switchSprite("run");
+    
   }else{
     player2.switchSprite("idle");
   }
 
-  if(keys["ArrowUp"]){
+  if(keys["ArrowUp"]&&!player2.isAttacking){
     player2.jump();
-    player2.switchSprite("jump");
-  }else if(player2.mathi.y>0){
+    
+  }
+  else if(player2.mathi.y>0&&player2.mathi.y<1.6){
     player2.framesMax=player2.sprites.fall.framesMax
     player2.switchSprite('fall')
-    console.log("falling");
+    console.log(player2.mathi.y);
   }
 }
 const p1Health= document.getElementById("p1Health")
 const p2Health= document.getElementById("p2Health");
 const timer= document.getElementById("timer");
 const whoWon=document.getElementById("whoWon");
-let time=5;
+let time=60;
 let timerId;
 
 function winnerwinner({player,player2,timerId}){
@@ -216,11 +260,11 @@ function gameLoop(){
   player.attackBox.x<player2.position.x+player2.size.width&&
   player.attackBox.x+player.attackBox.width> player2.position.x &&
   player.attackBox.y<player2.position.y + player2.size.height &&
-  player.attackBox.y+player.attackBox.height > player2.position.y&&player.isAttacking
+  player.attackBox.y+player.attackBox.height > player2.position.y&&player.isAttacking && player.framesCurrent===3
   ) 
   {
   player.isAttacking=false;
-  player2.health-=10;
+  player2.takeHit();
   p2Health.style.width=player2.health+"%";
   if(player2.health<=20){
   p2Health.style.backgroundColor="red";
@@ -238,13 +282,14 @@ player2.attackBox.y+player.attackBox.height>player.position.y&&player2.isAttacki
 ) 
 {
 player2.isAttacking=false;
-player.health-=10;
+player.takeHit();
 p1Health.style.width=player.health+"%";
 if(player.health<=20){
   p1Health.style.backgroundColor="red";
 }
 if(player.health<=0){
   winnerwinner({player,player2,timerId});
+  console.log(player2.health);
 }
 }
 
@@ -254,21 +299,15 @@ gameLoop();
 
 
 document.addEventListener("keyup",(event)=>{
-    if(event.key=="s")
+    if(event.key=="s"&&!player.isAttacking)
     {
       player.attack();
     }
-    if(event.key=="ArrowDown")
+    if(event.key=="ArrowDown"&&!player2.isAttacking)
     {
         player2.attack();
     }
 })
 
 
-let music=Math.floor(Math.random()*2);
-const bgMusic= new Audio(`GameAssets/bgMusic/music${music+1}.mp3`);
-document.addEventListener("click",()=>{
-  bgMusic.play();
-  bgMusic.volume=0.1;
-})
 
