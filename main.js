@@ -51,8 +51,46 @@ const player=new Player({
  },
  ctx:ctx,
 });
-const player2=new Player2(
-  ctx);
+const player2=new Player2({
+ imageSrc:"GameAssets/Players/MartialHero/Sprites/Idle.png",
+ framesMax:8,
+ scale:5,
+ offSet:{
+  x:390,
+  y:390,
+ },
+ sprites:{
+  idle:{
+    imageSrc:"GameAssets/Players/MartialHero/Sprites/Idle.png",
+    framesMax:8,
+    // scale:5,
+  },
+  run:{
+    imageSrc:"GameAssets/Players/MartialHero/Sprites/Run.png",
+    framesMax:8,
+    // scale:5,
+  },
+  jump:{
+    imageSrc:"GameAssets/Players/MartialHero/Sprites/Jump.png",
+    framesMax:2,
+    // scale:5,
+  },
+  fall:{
+    imageSrc:"GameAssets/Players/MartialHero/Sprites/Fall.png",
+    framesMax:2,
+  },
+  
+  attack1:{
+    imageSrc:`GameAssets/Players/MartialHero/Sprites/Attack1.png`,
+    framesMax:6,
+  },
+  attack2:{
+    imageSrc:`GameAssets/Players/MartialHero/Sprites/Attack2.png`,
+    framesMax:6,
+  },
+ },
+ ctx:ctx,
+});
 
 let keys={};
 let lastKey1=""; //for P1
@@ -81,7 +119,8 @@ document.addEventListener("keyup",(e)=>{
 
 function moving(){
   
-  if(player.isAttacking)return;
+  if(player.isAttacking){
+    return};
 
   if(keys["a"]&&lastKey1=="a"){
     player.moveLeft();
@@ -101,24 +140,36 @@ function moving(){
     player.switchSprite('fall')
     console.log("falling");
   }
-  
+
+
   // PLAYER 2
+  if(player2.isAttacking){
+    return};
   if (keys["ArrowLeft"]&&lastKey2=="ArrowLeft"){
     player2.moveLeft();
+    player2.switchSprite("run");
   }
   else if(keys["ArrowRight"]&&lastKey2=="ArrowRight"){
     player2.moveRight();
+    player2.switchSprite("run");
+  }else{
+    player2.switchSprite("idle");
   }
 
   if(keys["ArrowUp"]){
     player2.jump();
+    player2.switchSprite("jump");
+  }else if(player2.mathi.y>0){
+    player2.framesMax=player2.sprites.fall.framesMax
+    player2.switchSprite('fall')
+    console.log("falling");
   }
 }
 const p1Health= document.getElementById("p1Health")
 const p2Health= document.getElementById("p2Health");
 const timer= document.getElementById("timer");
 const whoWon=document.getElementById("whoWon");
-let time=60;
+let time=5;
 let timerId;
 
 function winnerwinner({player,player2,timerId}){
@@ -216,7 +267,7 @@ document.addEventListener("keyup",(event)=>{
 
 let music=Math.floor(Math.random()*2);
 const bgMusic= new Audio(`GameAssets/bgMusic/music${music+1}.mp3`);
-document.addEventListener("",()=>{
+document.addEventListener("click",()=>{
   bgMusic.play();
   bgMusic.volume=0.1;
 })
