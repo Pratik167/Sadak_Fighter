@@ -20,7 +20,10 @@ if(a==1){
 bgMusic.play();
   bgMusic.volume=0.1;
 }
-
+function effects(b){
+let effect= new Audio(b);
+effect.play();
+}
 const player=new Player({
  imageSrc:"GameAssets/Players/HeroKnight/Sprites/Idle.png",
  framesMax:11,
@@ -162,6 +165,9 @@ document.addEventListener("keyup",(e)=>{
 
 function moving(){
   
+  if(!player.dead){
+
+  
   if(player.isAttacking){
     return};
 
@@ -183,8 +189,10 @@ function moving(){
     player.switchSprite('fall')
     console.log("falling");
   }
+}
+  if(!player2.dead){
 
-
+  
   // PLAYER 2
   if(player2.isAttacking){
     return};
@@ -208,6 +216,7 @@ function moving(){
     player2.switchSprite('fall')
     console.log(player2.mathi.y);
   }
+}
 }
 const p1Health= document.getElementById("p1Health")
 const p2Health= document.getElementById("p2Health");
@@ -253,7 +262,10 @@ function gameLoop(){
   moving();
   player.update();
   player2.update();
-
+  if(player.dead||player2.dead){
+    bgMusic.pause();
+    canvas.style.backgroundImage=`url('GameAssets/Arenas/final.jpg')`;
+  }
   
   
   if(
@@ -263,7 +275,10 @@ function gameLoop(){
   player.attackBox.y+player.attackBox.height > player2.position.y&&player.isAttacking && player.framesCurrent===3
   ) 
   {
-  player.isAttacking=false;
+    let a= Math.floor(Math.random()*4);
+    let b=  `GameAssets/SwordClink/swing${a+1}.ogg`
+    player.isAttacking=false;
+  effects(b)
   player2.takeHit();
   p2Health.style.width=player2.health+"%";
   if(player2.health<=20){
@@ -281,6 +296,9 @@ player2.attackBox.y<player.position.y+player.size.height&&
 player2.attackBox.y+player.attackBox.height>player.position.y&&player2.isAttacking
 ) 
 {
+  let a= Math.floor(Math.random()*4);
+  let b=  `GameAssets/SwordClink/swing${a+1}.ogg`
+  effects(b)
 player2.isAttacking=false;
 player.takeHit();
 p1Health.style.width=player.health+"%";
@@ -292,20 +310,20 @@ if(player.health<=0){
   console.log(player2.health);
 }
 }
-
 }
+
 
 gameLoop();
 
 
 document.addEventListener("keyup",(event)=>{
-    if(event.key=="s"&&!player.isAttacking)
+    if(event.key=="s")
     {
       player.attack();
     }
-    if(event.key=="ArrowDown"&&!player2.isAttacking)
+    if(event.key=="ArrowDown")
     {
-        player2.attack();
+      player2.attack();
     }
 })
 

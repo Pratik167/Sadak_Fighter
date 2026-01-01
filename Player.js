@@ -187,7 +187,7 @@ class Player{
     // this.ctx.fillRect(this.attackBox.position.x,this.attackBox.position.y,this.attackBox.width,this.attackBox.height)
 
     if (
-  this.isAttacking&&
+      this.isAttacking&&
   (this.image==this.sprites.attack1.image||this.image==this.sprites.attack2.image)&&
   this.framesCurrent==this.sprites.attack1.framesMax-1
 ) {
@@ -217,23 +217,32 @@ class Player{
     this.switchSprite("run");
   }
 
-  attack() {
-    if (this.isAttacking) return;
-    const a=Math.floor(Math.random()*2)+1;
-    
-    this.isAttacking=true;
-    this.switchSprite(`attack${a}`);
-    console.log(a);
+  attack(){
+    if(!this.dead){
+
+      if (this.isAttacking) return;
+      const a=Math.floor(Math.random()*2)+1;
+      
+      this.isAttacking=true;
+      this.switchSprite(`attack${a}`);
+      // console.log(a);
+    }
 }
 takeHit(){
   this.health-=10;
-  if(this.health<=0){
+  if(this.health==0){
     this.switchSprite("death");
+    let b=`GameAssets/bgMusic/dead.mp3`;
+    this.effects(b)
+    this.isAttacking=false;
   }else{
     this.switchSprite("takeHit");
   }
 }
-
+effects(b){
+let effect= new Audio(b);
+effect.play();
+}
 }
 
 export default Player;

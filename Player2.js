@@ -83,7 +83,7 @@ class Player2{
   switchSprite(sprite){
     if(this.image==this.sprites.death.image){
       if(this.framesCurrent==this.sprites.death.framesMax-1)this.dead=true;
-        return;
+      return;
     }
 
     if((this.image==this.sprites.attack1.image&&this.framesCurrent<this.sprites.attack1.framesMax-1)||
@@ -217,20 +217,30 @@ class Player2{
     this.switchSprite("run");
   }
    attack(){
-    if (this.isAttacking) return;
-    const a=Math.floor(Math.random()*2)+1;
-    
-    this.isAttacking=true;
-    this.switchSprite(`attack${a}`);
-    console.log(a);
+    if(!this.dead){
+
+      if (this.isAttacking) return;
+      const a=Math.floor(Math.random()*2)+1;
+      
+      this.isAttacking=true;
+      this.switchSprite(`attack${a}`);
+      // console.log(a);
+    }
 }
 takeHit(){
   this.health-=10;
-  if(this.health<=0){
+  if(this.health==0){
     this.switchSprite("death");
+    let b=`GameAssets/bgMusic/dead.mp3`;
+    this.effects(b)
+    this.isAttacking=false;
   }else{
     this.switchSprite("takeHit");
   }
+}
+effects(b){
+let effect= new Audio(b);
+effect.play();
 }
 }
 
