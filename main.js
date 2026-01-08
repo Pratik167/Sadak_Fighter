@@ -7,6 +7,41 @@ const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
+
+function ko(){
+  const koDiv=document.getElementById("KO");
+  const audio=new Audio("GameAssets/KO/KO.mp3");
+  audio.play();
+  koDiv.innerHTML="";
+  const video=document.createElement("video");
+  video.autoplay=true;
+  video.muted=true;
+  video.playsInline=true;
+  video.controls=false;
+  video.style.width="100%";
+  video.style.height="100%";
+  video.style.objectFit="cover";
+
+  const source=document.createElement("source");
+  source.src="GameAssets/KO/0103.mp4";
+  source.type="video/mp4";
+
+  video.appendChild(source);
+  koDiv.appendChild(video);
+  koDiv.style.display="flex";
+  // koDiv.style.zIndex="9999";
+
+  // remove after finish
+  video.onended=()=>{
+    koDiv.style.display ="none";
+    koDiv.innerHTML="";
+  };
+}
+
+
+
+
+
 let Arena= Math.floor(Math.random()*13);
 canvas.style.backgroundImage=`url('GameAssets/Arenas/Arena${Arena+1}.gif')`;
 let a=1;
@@ -235,12 +270,16 @@ if(player.health==player2.health)
   if(player.health>player2.health)
   {
     whoWon.style.display="flex";
-    whoWon.textContent="Player1 Won";
+    // whoWon.textContent="Player1 Won";
+    // ko();
+    
   }
   if(player.health<player2.health)
   {
     whoWon.style.display="flex";
-    whoWon.textContent="Player2 Won";
+    // whoWon.textContent="Player2 Won";
+    // ko();
+    
   }
 }
 function decTime(){
@@ -251,6 +290,7 @@ function decTime(){
   }
   if(time==0){
     winnerwinner({player,player2,timerId});
+    
   }
 }
 decTime();
@@ -264,7 +304,8 @@ function gameLoop(){
   player2.update();
   if(player.dead||player2.dead){
     bgMusic.pause();
-    canvas.style.backgroundImage=`url('GameAssets/Arenas/final.jpg')`;
+    // canvas.style.backgroundImage=`url('GameAssets/Arenas/final1.jpg')`;
+    
   }
   
   
@@ -286,6 +327,8 @@ function gameLoop(){
 }
   if(player2.health<=0){
  winnerwinner({player,player2,timerId})
+ canvas.style.backgroundImage=`url('GameAssets/Arenas/final1.jpg')`;
+ ko();
 }
   }
 
@@ -307,11 +350,14 @@ if(player.health<=20){
 }
 if(player.health<=0){
   winnerwinner({player,player2,timerId});
+  canvas.style.backgroundImage=`url('GameAssets/Arenas/final1.jpg')`;
+  ko();
+  
   console.log(player2.health);
 }
 }
-}
 
+}
 
 gameLoop();
 

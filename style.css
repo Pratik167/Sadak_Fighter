@@ -43,6 +43,20 @@ body{
   font-size: 200px;
   color: white; 
 }
+#KO {
+  position: fixed;          /* fixed so it stays relative to the viewport */
+  top: 11.2vw;
+  left: 54.4vh;
+  width: 40.3vw;             /* full viewport width */
+  height: 40.5vh;            /* full viewport height */
+
+  display: none;            /* show only when KO happens */
+
+  pointer-events: none;     /* clicks pass through if needed */
+  background: transparent;  /* optional, or black/rgba if you want fade */
+}
+
+
 
 #p1Health{
   position: absolute;
