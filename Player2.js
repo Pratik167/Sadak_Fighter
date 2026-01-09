@@ -22,7 +22,7 @@ class Player2{
     this.offSet=offSet;
     this.sprites=sprites;
     this.dead=false;
-
+    this.staminaBar=200;
     for(const sprite in this.sprites){
       sprites[sprite].image=new Image()
       sprites[sprite].image.src=sprites[sprite].imageSrc
@@ -48,7 +48,16 @@ class Player2{
     };
     this.health=100;
   }
- 
+  stamina(){
+    this.ctx.fillStyle="yellow";
+    this.ctx.fillRect(
+        this.position.x,
+        this.position.y-50,
+        this.staminaBar,10
+    );
+    
+    
+  }
   draw() {
   this.ctx.save(); // canvas ko current state stores
   this.ctx.imageSmoothingEnabled = false; // bnot too much blurry 
@@ -69,7 +78,7 @@ class Player2{
     this.image.height*this.scale
   );
   this.ctx.restore();
-
+  this.stamina();
   // this.ctx.fillStyle = "green"; //collisoin testt
   //     this.ctx.fillRect(
   //       this.attackBox.x,
@@ -217,6 +226,7 @@ class Player2{
     this.switchSprite("run");
   }
    attack(){
+    this.staminaBar-=40;
     if(!this.dead){
 
       if (this.isAttacking) return;
@@ -229,6 +239,7 @@ class Player2{
 }
 takeHit(){
   this.health-=10;
+  
   if(this.health==0){
     this.switchSprite("death");
     let b=`GameAssets/bgMusic/dead.mp3`;

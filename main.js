@@ -8,6 +8,8 @@ canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
 
+
+
 function ko(){
   const koDiv=document.getElementById("KO");
   const audio=new Audio("GameAssets/KO/KO.mp3");
@@ -23,7 +25,7 @@ function ko(){
   video.style.objectFit="cover";
 
   const source=document.createElement("source");
-  source.src="GameAssets/KO/0103.mp4";
+  source.src="GameAssets/KO/111.mov";
   source.type="video/mp4";
 
   video.appendChild(source);
@@ -173,6 +175,8 @@ const player2=new Player2({
  ctx:ctx,
 });
 
+
+
 let keys={};
 let lastKey1=""; //for P1
 let lastKey2=""; //for p2
@@ -206,17 +210,17 @@ function moving(){
   if(player.isAttacking){
     return};
 
-  if(keys["a"]&&lastKey1=="a"){
+  if((keys["a"]&&lastKey1=="a")||(keys["A"]&&lastKey1=="A")){
     player.moveLeft();
   
-  } else if(keys["d"]&&lastKey1=="d"){
+  } else if((keys["d"]&&lastKey1=="d")||(keys["D"]&&lastKey1=="D")){
     player.moveRight();
 
   }else{
     player.switchSprite("idle");
   }
 
-  if(keys["w"]&&!player.isAttacking){
+  if((keys["w"]||keys["W"])&&!player.isAttacking){
     player.jump();
   }
   else if(player.mathi.y>0&&player.mathi.y<1.6){
@@ -363,13 +367,33 @@ gameLoop();
 
 
 document.addEventListener("keyup",(event)=>{
-    if(event.key=="s")
+    if((event.key=="s"||event.key=="S")&&player.staminaBar>0)
     {
-      player.attack();
+        player.attack();
+        let staminaInterval1;
+if (player.staminaBar==0){
+  staminaInterval1=setInterval(()=>{
+    player.staminaBar+=40;
+    if (player.staminaBar>=200){
+      player.staminaBar=200;
+      clearInterval(staminaInterval1);
     }
-    if(event.key=="ArrowDown")
+  },1000);
+}
+    }
+    if(event.key=="ArrowDown"&&player2.staminaBar>0)
     {
       player2.attack();
+      let staminaInterval;
+if (player2.staminaBar==0){
+  staminaInterval=setInterval(()=>{
+    player2.staminaBar+=40;
+    if (player2.staminaBar>=200){
+      player2.staminaBar=200;
+      clearInterval(staminaInterval);
+    }
+  },1000);
+}
     }
 })
 

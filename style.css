@@ -45,15 +45,13 @@ body{
 }
 #KO {
   position: fixed;          /* fixed so it stays relative to the viewport */
-  top: 11.2vw;
-  left: 54.4vh;
-  width: 40.3vw;             /* full viewport width */
-  height: 40.5vh;            /* full viewport height */
+  top: 11vw;
+  left: 60vh;
+  width: 40vw;             /* full viewport width */
+  height: 40vh;            /* full viewport height */
 
   display: none;            /* show only when KO happens */
-
-  pointer-events: none;     /* clicks pass through if needed */
-  background: transparent;  /* optional, or black/rgba if you want fade */
+  mix-blend-mode: screen;
 }
 
 
@@ -83,3 +81,4 @@ body{
   font-family: "FighterFish";
   src:url("./GameAssets/FighterFish-3zG53.otf") format("opentype");
 }
+

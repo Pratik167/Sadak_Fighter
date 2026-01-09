@@ -21,7 +21,7 @@ class Player{
     this.offSet=offSet;
     this.sprites=sprites;
     this.dead=false;
-
+    this.staminaBar=200;
     
     for(const sprite in this.sprites){
       sprites[sprite].image=new Image()
@@ -51,7 +51,14 @@ class Player{
     //Health
     this.health = 100;
   }
-
+  stamina(){
+    this.ctx.fillStyle="yellow";
+    this.ctx.fillRect(
+        this.position.x,
+        this.position.y-50,
+        this.staminaBar,10
+    );
+  }
   draw(){
     this.ctx.imageSmoothingEnabled=false;
     this.ctx.drawImage(
@@ -65,7 +72,8 @@ class Player{
       (this.image.width/this.framesMax)*this.scale,
       this.image.height*this.scale
     );
-
+    this.stamina();
+    
 
     // if (this.isAttacking) {
       
@@ -216,8 +224,9 @@ class Player{
       this.position.x=canvas.width-this.size.width;
     this.switchSprite("run");
   }
-
   attack(){
+    this.staminaBar-=40;
+    
     if(!this.dead){
 
       if (this.isAttacking) return;
